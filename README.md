@@ -4,6 +4,8 @@
 
 Live: https://mura0420.github.io/agentsite-inspector/ · Network URL: `https://mura0420.github.io/agentsite-inspector/inspector`
 
+![A report for the broken sample: verdict, network map and findings with fixes](docs/report-broken.png)
+
 The [Worldwide Agentic Web MVP specification](https://github.com/cognizant-ai-labs/agentic-web/blob/main/docs/worldwide_agentic_web_mvp_spec.md)
 says what an agent site must publish so that any browser can load its agents: a manifest, a
 data-only network definition, peer metadata and cross-origin access. The challenge repository's
