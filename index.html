@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agent Site Inspector — conformance checks for the Open Agentic Web</title>
+    <meta name="description" content="Check any open agentic website against the Worldwide Agentic Web MVP specification, in your browser. Its own assistant explains each finding and how to fix it.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assistant.css">
+    <script type="module" src="inspector.js"></script>
+    <script type="module" src="site.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="./"><img src="favicon.svg" alt="" width="28" height="28"> Agent Site Inspector</a>
+        <nav><a href="#how">How it works</a><a href="#assistant">Ask the inspector</a><a href="https://github.com/mura0420/agentsite-inspector">Source</a></nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <h1>Is your agent site ready for the open agentic web?</h1>
+        <p class="lead">Paste a site, its <code>agent-manifest.json</code> or a network URL. The inspector reads the public agent files the way a calling browser does and checks them against the <a href="https://github.com/cognizant-ai-labs/agentic-web/blob/main/docs/worldwide_agentic_web_mvp_spec.md">Worldwide Agentic Web MVP specification</a>, rule by rule.</p>
+        <form id="inspect-form" class="inspect" autocomplete="off">
+          <label for="target" class="sr-only">Agentic website URL</label>
+          <input id="target" name="target" type="text" inputmode="url" placeholder="https://your-site.example/  or  https://your-site.example/agents/front_desk" required>
+          <button id="inspect-button" type="submit">Inspect</button>
+        </form>
+        <div class="samples"><span class="muted">Try:</span> <span id="samples"></span></div>
+        <p id="inspect-status" class="status" role="status"></p>
+        <noscript><p>The inspector runs in your browser and needs JavaScript. You can also run <code>node cli/inspect.mjs &lt;url&gt;</code> from the source.</p></noscript>
+      </section>
+
+      <div id="report" hidden></div>
+
+      <section id="how" class="how">
+        <h2>How it works</h2>
+        <div class="grid3">
+          <div><h3>Reads like a caller</h3><p>It fetches the manifest, each network definition and <code>links.json</code> with plain GET requests and no credentials, from this page's origin. If this page can read them, any agentic website can.</p></div>
+          <div><h3>Validates like the runtime</h3><p>Networks are parsed and validated by the reference browser runtime's own HOCON parser and validator, then checked for the MVP rules on content, data-only publishing, credentials, peers and MCP.</p></div>
+          <div><h3>Asks before it reaches out</h3><p>Peer networks are listed but never fetched on their own. Each new origin is an inspection you start, and the assistant asks you on a card before it contacts one.</p></div>
+        </div>
+        <p class="muted">Every finding links to the spec section it comes from and says how to fix it. The same checks run in CI: <code>node cli/inspect.mjs https://your-site.example/ --badge badge.svg</code>.</p>
+      </section>
+
+      <section id="assistant" class="assistant" aria-labelledby="assistant-heading">
+        <h2 id="assistant-heading">Ask the inspector</h2>
+        <p>This page is itself an open agentic website. Its assistant can run an inspection for you, explain each finding with the spec section behind it, and draft the exact manifest or network change that fixes it.</p>
+        <p class="assistant-note">Your messages and this page's data go to the LLM provider you choose in the settings below. Before the assistant contacts another site, you confirm it.</p>
+        <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the inspector above.</p>
+        <div id="agent-app">
+          <div data-ns-slot="header"></div>
+          <div class="assistant-panels">
+            <div data-ns-slot="chat"></div>
+            <div data-ns-slot="agents"></div>
+          </div>
+          <div data-ns-slot="settings"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap foot">
+      <p>Agent Site Inspector is open source (Apache-2.0). It checks published files only; it does not run a site's agents or call its LLM router. Its network URL: <code id="own-network"></code></p>
+    </footer>
+    <script>document.getElementById("own-network").textContent = new URL("inspector", location.href.split("?")[0].replace(/[^/]*$/, "")).href;</script>
+  </body>
+</html>

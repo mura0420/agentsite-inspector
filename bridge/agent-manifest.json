@@ -1,0 +1,10 @@
+{
+  "networks": [
+    {
+      "name": "inspector"
+    }
+  ],
+  "actions": {
+    "version": 1
+  }
+}

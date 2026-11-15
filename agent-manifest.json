@@ -1,0 +1,80 @@
+{
+  "brand": "Agent Site Inspector",
+  "networks": [
+    {
+      "name": "inspector",
+      "front_man": "site_inspector",
+      "hocon": "./inspector.network.json",
+      "description": "Checks open agentic websites against the Worldwide Agentic Web MVP specification and explains how to fix each finding.",
+      "tags": [
+        "agentified-website",
+        "conformance",
+        "developer-tools"
+      ],
+      "sample_queries": [
+        "Inspect the broken sample and tell me what to fix first.",
+        "What does rule AW-H02 mean, and how do I fix it on GitHub Pages?",
+        "Write the agent-manifest.json fix for every manifest finding in the last report.",
+        "Which spec rules cover peer networks?",
+        "Can you log in to my hosting account and change the headers for me?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Local agents and page-local actions only. Inspections read other sites' public files only after the visitor confirms."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "inspector",
+    "front_man": "site_inspector",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#1d4e89"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "inspector",
+        "front_man": "site_inspector",
+        "aliases": [
+          "inspector",
+          "site_inspector"
+        ],
+        "url": "inspector"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_inspector_state",
+      "get_rules",
+      "inspect_site"
+    ]
+  }
+}

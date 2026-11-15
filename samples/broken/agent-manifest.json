@@ -1,0 +1,19 @@
+{
+  "networks": [
+    {
+      "name": "helpdesk",
+      "front_man": "front_desk",
+      "hocon": "./helpdesk.network.json"
+    },
+    {
+      "name": "helpdesk",
+      "front_man": "x"
+    },
+    {
+      "name": "faq",
+      "front_man": "nobody",
+      "hocon": "./faq.network.json"
+    }
+  ],
+  "allowed_peers": []
+}

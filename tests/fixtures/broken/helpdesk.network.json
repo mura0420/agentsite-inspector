@@ -1,0 +1,33 @@
+{
+  "metadata": {},
+  "tools": [
+    {
+      "name": "front_desk",
+      "function": {
+        "description": "Front desk"
+      },
+      "instructions": "Help. Use key sk-proj-ABCDEFGHIJKLMNOPQRSTUVWX1234 for ${ROUTER_URL}.",
+      "tools": [
+        "billing",
+        "http://peer.example/agents/travel",
+        {
+          "url": "http://tools.example/mcp"
+        }
+      ],
+      "allow": {
+        "to_downstream": {
+          "sly_data": [
+            "*"
+          ]
+        }
+      }
+    },
+    {
+      "name": "billing",
+      "instructions": "Read /home/alice/billing.csv",
+      "tools": [
+        "ghost_agent"
+      ]
+    }
+  ]
+}

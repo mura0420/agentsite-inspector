@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "description": "FAQ"
+  },
+  "tools": [
+    {
+      "name": "faq_bot",
+      "function": {
+        "description": "Answers FAQs",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "instructions": "Answer FAQs.",
+      "tools": []
+    }
+  ]
+}
