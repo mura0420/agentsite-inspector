@@ -254,9 +254,23 @@ class Inspection {
       record.error = this.env === "browser"
         ? `This browser could not read ${url}. The file is missing, the host is down, or the host does not allow cross-origin reads (CORS).`
         : `Could not fetch ${url}: ${error.message}`;
+      if (this.env === "browser" && await this.hostAnswers(url)) {
+        // An opaque no-cors response means the host answered but the browser hid the body.
+        record.corsBlocked = true;
+        record.error = `The host answered for ${url}, but did not allow this page to read it: no Access-Control-Allow-Origin header that covers this origin (or the file is missing).`;
+      }
       record.networkError = true;
       this.files.push(record);
       return record;
+    }
+  }
+
+  async hostAnswers(url) {
+    try {
+      const resp = await this.fetch(url, { mode: "no-cors", credentials: "omit", cache: "no-store" });
+      return resp.type === "opaque" || resp.status === 0 || resp.ok;
+    } catch {
+      return false;
     }
   }
 
@@ -264,7 +278,10 @@ class Inspection {
     const publicFiles = this.files.filter((f) => f.status && f.ok);
     if (this.env === "browser") {
       const blocked = this.files.filter((f) => f.networkError);
-      if (blocked.length && !publicFiles.length) {
+      const corsBlocked = blocked.filter((f) => f.corsBlocked);
+      if (corsBlocked.length) {
+        this.add("AW-H02", false, `${corsBlocked[0].error} Other agentic websites cannot load this network until the header is sent. The CLI (node cli/inspect.mjs <url>) prints the headers the host sends.`);
+      } else if (blocked.length && !publicFiles.length) {
         this.add("AW-H02", false, `${blocked[0].error} Run the CLI (node cli/inspect.mjs <url>) to tell a missing file from a CORS refusal.`);
       } else if (publicFiles.length) {
         this.add("AW-H02", true, `This page, on another origin, read ${publicFiles.length} public file(s), so CORS allows them.`);
